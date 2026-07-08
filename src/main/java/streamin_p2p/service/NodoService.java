@@ -61,4 +61,12 @@ public class NodoService {
             }
         }
     }
+
+    //consulta que tiene un nodo especifico
+    public Map<Integer, Fragmento> obtenerFragmentosDeNodo(String nodoId){
+        if (!storage.containsKey(nodoId)){
+            throw new IllegalArgumentException ("El nodo " + nodoId + " no existe en la red.");
+        }
+        return storage.get(nodoId);
+    }
 }

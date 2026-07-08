@@ -31,4 +31,9 @@ public class NodoController {
         return "El nodo " + nodo + " aviso a la red que tiene el fragmento " + idFragmento;
     }
     
+    //ver el inventario de un nodo
+    @GetMapping("/estado")
+    public Map<Integer, Fragmento> verEstadoNodo(@RequestParam String nodo){
+        return nodoService.obtenerFragmentosDeNodo(nodo);
+    }
 }
