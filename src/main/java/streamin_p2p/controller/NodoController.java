@@ -1,14 +1,18 @@
 package streamin_p2p.controller;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import streamin_p2p.model.Fragmento;
 import streamin_p2p.service.NodoService;
+import streamin_p2p.service.VideoFragmentService;
 
 @RestController
 @RequestMapping("/api/p2p")
@@ -37,5 +41,21 @@ public class NodoController {
     @GetMapping("/estado")
     public Map<Integer, Fragmento> verEstadoNodo(@RequestParam String nodo){
         return nodoService.obtenerFragmentosDeNodo(nodo);
+    }
+
+    @Autowired
+    private VideoFragmentService videoFragmentService;
+
+    @PostMapping
+    public String inicializarRed(){
+        try {
+            List<Fragmento> frags = videoFragmentService.dividirVideo();
+            for (Fragmento f : frags){
+                nodoService.registrarFragmento("NodoA", f);
+            }
+            return "Video fragmentado y registrado exitosamente en el NodoA";
+        } catch (Exception e){
+            return "Error al fragmentar video: " + e.getMessage();
+        }
     }
 }
