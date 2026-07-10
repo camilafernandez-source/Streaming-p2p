@@ -81,4 +81,34 @@ public class NodoService {
         }
         return estadoRed;
     }
+
+    public boolean solicitarFragmento(String nodoSolicitante, int idFragmento){
+        //verificamos si el nodo solicitante existe
+        if(storage.get(nodoSolicitante).containsKey(idFragmento)){
+            System.out.println("El " + nodoSolicitante + " ya tenia el fragmento " + idFragmento);
+            return true;
+        }
+        System.out.println("El " + nodoSolicitante + " esta buscando el fragmento " + idFragmento + " en la red...");
+
+        //buscamos quien lo tiene
+        for (String posibleProveedor : nodosEnLaRed){
+            if(!posibleProveedor.equals(nodoSolicitante)){
+                if (storage.get(posibleProveedor).containsKey(idFragmento)){
+                    System.out.println("  -> Lo tiene " + posibleProveedor);
+
+                    //simulamos la descarga
+                    Fragmento original = storage.get(posibleProveedor).get(idFragmento);
+                    Fragmento copia = new Fragmento(idFragmento, original.getContenido(), nodoSolicitante);
+
+                    //registramos el fragmento en el nodo solicitante
+                    storage.get(nodoSolicitante).put(idFragmento, copia);
+                    System.out.println("  -> Transferencia P2P exitosa de " + posibleProveedor + " a " + nodoSolicitante);
+                    return true; //terminamos la busqueda
+                }
+            }
+        }
+
+        System.out.println("  -> Ningun nodo en la red tiene el fragmento " + idFragmento);
+        return false;
+    }
 }

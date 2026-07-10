@@ -64,4 +64,18 @@ public class NodoController {
     public Map<String, List<Integer>> verEstadoDeLaRed(){
         return nodoService.obtenerEstadoDeLaRed();
     }
+
+    @PostMapping("/solicitar")
+    public String solicitarFragmentoManual(@RequestParam String nodoSolicitante, @RequestParam int idFragmento){
+        try {
+            boolean exito = nodoService.solicitarFragmento(nodoSolicitante, idFragmento);
+            if (exito){
+                return "Solicitud completada. El " + nodoSolicitante + " ahora tiene el fragmento " + idFragmento;
+            } else {
+                return "Error: ningun nodo en la red tiene el fragmento " + idFragmento + "todavia";
+            }
+        } catch (Exception e){
+            return "Error en la solicitud: " + e.getMessage();
+        }
+    }
 }
