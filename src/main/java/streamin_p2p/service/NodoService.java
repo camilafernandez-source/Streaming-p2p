@@ -82,33 +82,43 @@ public class NodoService {
         return estadoRed;
     }
 
-    public boolean solicitarFragmento(String nodoSolicitante, int idFragmento){
-        //verificamos si el nodo solicitante existe
-        if(storage.get(nodoSolicitante).containsKey(idFragmento)){
-            System.out.println("El " + nodoSolicitante + " ya tenia el fragmento " + idFragmento);
+    public boolean solicitarFragmento(String nodoSolicitante, int idFragmento) {
+        // 1. Validar que el nodo solicitante exista
+        if (!storage.containsKey(nodoSolicitante)) {
+            System.out.println("❌ Nodo solicitante no encontrado: " + nodoSolicitante);
+            return false;
+        }
+
+        // 2. Validar que el inventario del nodo no sea null
+        Map<Integer, Fragmento> inventarioNodo = storage.get(nodoSolicitante);
+        if (inventarioNodo == null) {
+            return false;
+        }
+
+        // 3. Si ya lo tiene, no hacemos nada
+        if (inventarioNodo.containsKey(idFragmento)) {
+            System.out.println("El nodo " + nodoSolicitante + " ya tiene el fragmento " + idFragmento);
             return true;
         }
-        System.out.println("El " + nodoSolicitante + " esta buscando el fragmento " + idFragmento + " en la red...");
 
-        //buscamos quien lo tiene
-        for (String posibleProveedor : nodosEnLaRed){
-            if(!posibleProveedor.equals(nodoSolicitante)){
-                if (storage.get(posibleProveedor).containsKey(idFragmento)){
-                    System.out.println("  -> Lo tiene " + posibleProveedor);
+        System.out.println("🔍 " + nodoSolicitante + " buscando el fragmento " + idFragmento + " en la red...");
 
-                    //simulamos la descarga
-                    Fragmento original = storage.get(posibleProveedor).get(idFragmento);
+        // 4. Buscar en los otros nodos
+        for (String posibleProveedor : nodosEnLaRed) {
+            if (!posibleProveedor.equals(nodoSolicitante)) {
+                Map<Integer, Fragmento> inventarioProveedor = storage.get(posibleProveedor);
+                
+                // Nueva validación de seguridad aquí
+                if (inventarioProveedor != null && inventarioProveedor.containsKey(idFragmento)) {
+                    Fragmento original = inventarioProveedor.get(idFragmento);
                     Fragmento copia = new Fragmento(idFragmento, original.getContenido(), nodoSolicitante);
-
-                    //registramos el fragmento en el nodo solicitante
+                    
                     storage.get(nodoSolicitante).put(idFragmento, copia);
-                    System.out.println("  -> Transferencia P2P exitosa de " + posibleProveedor + " a " + nodoSolicitante);
-                    return true; //terminamos la busqueda
+                    System.out.println("   -> 📥 Transferencia P2P exitosa de " + posibleProveedor + " a " + nodoSolicitante);
+                    return true;
                 }
             }
         }
-
-        System.out.println("  -> Ningun nodo en la red tiene el fragmento " + idFragmento);
         return false;
     }
 }
