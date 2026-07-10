@@ -83,38 +83,38 @@ public class NodoService {
     }
 
     public boolean solicitarFragmento(String nodoSolicitante, int idFragmento) {
-        // 1. Validar que el nodo solicitante exista
+        // validar que el nodo solicitante exista
         if (!storage.containsKey(nodoSolicitante)) {
-            System.out.println("❌ Nodo solicitante no encontrado: " + nodoSolicitante);
+            System.out.println("Nodo solicitante no encontrado: " + nodoSolicitante);
             return false;
         }
 
-        // 2. Validar que el inventario del nodo no sea null
+        // validar que el inventario del nodo no sea null
         Map<Integer, Fragmento> inventarioNodo = storage.get(nodoSolicitante);
         if (inventarioNodo == null) {
             return false;
         }
 
-        // 3. Si ya lo tiene, no hacemos nada
+        
         if (inventarioNodo.containsKey(idFragmento)) {
             System.out.println("El nodo " + nodoSolicitante + " ya tiene el fragmento " + idFragmento);
             return true;
         }
 
-        System.out.println("🔍 " + nodoSolicitante + " buscando el fragmento " + idFragmento + " en la red...");
+        System.out.println(nodoSolicitante + " buscando el fragmento " + idFragmento + " en la red...");
 
-        // 4. Buscar en los otros nodos
+        // buscar en los otros nodos
         for (String posibleProveedor : nodosEnLaRed) {
             if (!posibleProveedor.equals(nodoSolicitante)) {
                 Map<Integer, Fragmento> inventarioProveedor = storage.get(posibleProveedor);
                 
-                // Nueva validación de seguridad aquí
+                //validación de seguridad aquí
                 if (inventarioProveedor != null && inventarioProveedor.containsKey(idFragmento)) {
                     Fragmento original = inventarioProveedor.get(idFragmento);
                     Fragmento copia = new Fragmento(idFragmento, original.getContenido(), nodoSolicitante);
                     
                     storage.get(nodoSolicitante).put(idFragmento, copia);
-                    System.out.println("   -> 📥 Transferencia P2P exitosa de " + posibleProveedor + " a " + nodoSolicitante);
+                    System.out.println("   -> Transferencia P2P exitosa de " + posibleProveedor + " a " + nodoSolicitante);
                     return true;
                 }
             }
