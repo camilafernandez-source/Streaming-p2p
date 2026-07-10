@@ -1,5 +1,6 @@
 package streamin_p2p.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -68,5 +69,16 @@ public class NodoService {
             throw new IllegalArgumentException ("El nodo " + nodoId + " no existe en la red.");
         }
         return storage.get(nodoId);
+    }
+
+    public Map<String, List<Integer>> obtenerEstadoDeLaRed(){
+        Map<String, List<Integer>> estadoRed = new HashMap<>();
+
+        for(String nodo : nodosEnLaRed){
+            Map<Integer, Fragmento> fragmentosDelNodo = storage.get(nodo);
+            List<Integer> ids = new ArrayList<>(fragmentosDelNodo.keySet());
+            estadoRed.put(nodo, ids);
+        }
+        return estadoRed;
     }
 }

@@ -58,4 +58,10 @@ public class NodoController {
             return "Error al fragmentar video: " + e.getMessage();
         }
     }
+
+    //endpoint para ver todos los fragmentos en la red
+    @GetMapping("/red")
+    public Map<String, List<Integer>> verEstadoDeLaRed(){
+        return nodoService.obtenerEstadoDeLaRed();
+    }
 }
