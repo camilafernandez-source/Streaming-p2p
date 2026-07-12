@@ -38,11 +38,14 @@ public class NodoController {
     @GetMapping("/inicializar")
     public String inicializarRed(){
         try {
+            String[] nodos = {"NodoA", "NodoB", "NodoC"};
+
+            //distribuimos los fragmentos
             List<Fragmento> frags = videoFragmentService.dividirVideo();
-            for (Fragmento f : frags){
-                nodoService.registrarFragmento("NodoA", f);
+            for(int i=0; i<frags.size(); i++){
+                nodoService.registrarFragmento(nodos[i%3], frags.get(i));
             }
-            return "Video fragmentado y registrado exitosamente en el NodoA";
+            return "Video dividido y distribuido equitativamente entre los nodos de la red";
         } catch (Exception e){
             return "Error al fragmentar video: " + e.getMessage();
         }
