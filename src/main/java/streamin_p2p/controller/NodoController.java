@@ -97,4 +97,9 @@ public class NodoController {
             return "Error al reconstruir video: " + e.getMessage();
         }
     }
+
+    @GetMapping("/")
+    public String inicio(){
+        return "Sistema de Streaming P2P Distribuido\n" + "Autor: Alejandra Fernández Torres\n" + "Nodos activos: NodoA, NodoB, NodoC\n\n" + "👉 Ve a /swagger-ui/index.html para probar la API.";
+    }
 }
